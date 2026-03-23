@@ -1,0 +1,72 @@
+<div class="setup-container">
+  <div class="card setup-card animate-slide-up">
+    <div class="text-center mb-6">
+      <h2 class="text-primary font-bold">Profile Setup</h2>
+      <p class="text-muted mt-1">Tell us a bit about yourself</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit($event)">
+      <div class="form-row">
+        <div class="mb-4 flex-1">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" [(ngModel)]="profile.firstName" placeholder="John" required>
+        </div>
+        <div class="mb-4 flex-1">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" [(ngModel)]="profile.lastName" placeholder="Doe" required>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" [(ngModel)]="profile.dob" required>
+      </div>
+
+      <div class="form-row">
+        <div class="mb-4 flex-1">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" name="height" [(ngModel)]="profile.height" placeholder="175" required>
+        </div>
+        <div class="mb-4 flex-1">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" name="weight" [(ngModel)]="profile.weight" placeholder="70" required>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="jobType">Job Type</label>
+        <select id="jobType" name="jobType" [(ngModel)]="profile.jobType" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="sitting">Sitting / Desk Job</option>
+          <option value="active">Active / Field Job</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label for="foodPref">Food Preference</label>
+        <select id="foodPref" name="foodPref" [(ngModel)]="profile.foodPref" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="veg">Vegetarian</option>
+          <option value="non-veg">Non-Vegetarian</option>
+        </select>
+      </div>
+      
+      <div class="mb-4">
+        <label for="conditions">Health Conditions (Optional)</label>
+        <input type="text" id="conditions" name="conditions" [(ngModel)]="profile.conditions" placeholder="e.g. Asthma, none">
+      </div>
+      
+      <div class="mb-4">
+        <label for="sleep">Sleep Hours (Optional)</label>
+        <input type="number" id="sleep" name="sleep" [(ngModel)]="profile.sleep" placeholder="8">
+      </div>
+
+      <div class="mb-6">
+        <label for="routine">Daily Routine (Optional)</label>
+        <textarea id="routine" rows="2" name="routine" [(ngModel)]="profile.routine" placeholder="Describe your typical day..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-2">Save Profile & Continue</button>
+    </form>
+  </div>
+</div>

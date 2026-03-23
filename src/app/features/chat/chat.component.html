@@ -1,0 +1,44 @@
+<div class="chat-container animate-fade-in">
+  <div class="chat-header">
+    <h2 class="font-bold">HealthAssist AI</h2>
+    <p class="text-sm text-muted">Online</p>
+  </div>
+  
+  <div class="chat-messages">
+    <div class="message-bubble bot">
+      <p>Hello! I'm your HealthAssist AI. How can I help you today?</p>
+      <span class="time">10:00 AM</span>
+    </div>
+    
+    <div class="message-bubble user">
+      <p>What should I eat today to lose belly fat?</p>
+      <span class="time">10:05 AM</span>
+    </div>
+    
+    <div class="message-bubble bot">
+      <p>For belly fat reduction, focus on high protein and fiber. Try a spinach and mushroom omelet for breakfast, and grilled chicken with quinoa for lunch!</p>
+      <span class="time">10:05 AM</span>
+    </div>
+    
+    @for(msg of messages(); track $index) {
+      <div class="message-bubble user">
+        <p>{{msg}}</p>
+        <span class="time">Now</span>
+      </div>
+    }
+  </div>
+  
+  <div class="chat-input-area">
+    <div class="suggestion-chips">
+      <button class="chip" (click)="setSuggestion('How to improve sleep?')">Sleep</button>
+      <button class="chip" (click)="setSuggestion('Suggest a 10min workout')">Workout</button>
+      <button class="chip" (click)="setSuggestion('Healthy snacks')">Snacks</button>
+    </div>
+    <form class="input-form" (ngSubmit)="sendMessage($event)">
+      <input type="text" placeholder="Ask anything about health..." [(ngModel)]="currentMessage" name="msg" autocomplete="off" class="chat-input">
+      <button type="submit" class="send-btn" [disabled]="!currentMessage.trim()">
+        <span>➔</span>
+      </button>
+    </form>
+  </div>
+</div>

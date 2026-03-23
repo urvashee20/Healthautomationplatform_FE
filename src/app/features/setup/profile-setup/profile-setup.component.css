@@ -1,0 +1,22 @@
+.setup-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background-color: var(--color-background);
+}
+.setup-card {
+  width: 100%;
+  max-width: 500px;
+}
+.text-primary { color: var(--color-primary); }
+.font-bold { font-weight: 700; font-size: 1.5rem; }
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+.flex-1 { flex: 1; }
+@media (max-width: 600px) {
+  .form-row { flex-direction: column; gap: 0; }
+}

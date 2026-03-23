@@ -1,0 +1,102 @@
+<div class="dashboard-container animate-fade-in">
+  <div class="welcome-section mb-6">
+    <h1 class="font-bold text-2xl">Dashboard</h1>
+    <p class="text-muted">Current Goal: <span class="text-primary font-bold">Health Focus</span></p>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-grid mb-8">
+    <div class="card stat-card border-left-blue">
+      <p class="text-muted">Current Weight</p>
+      <h2 class="stat-value">72 kg</h2>
+    </div>
+    <div class="card stat-card border-left-green">
+      <p class="text-muted">Target Weight</p>
+      <h2 class="stat-value">65 kg</h2>
+    </div>
+    <div class="card stat-card border-left-purple">
+      <p class="text-muted">BMI</p>
+      <h2 class="stat-value">24.5</h2>
+    </div>
+    <div class="card stat-card justify-center items-center bg-primary text-white">
+      <p class="opacity-80">Health Score</p>
+      <h2 class="text-3xl font-bold">85/100</h2>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid mb-8">
+    
+    <!-- AI Plan Section -->
+    <div class="ai-plan-section">
+      <h3 class="section-title mb-4">🤖 Your Daily AI Plan</h3>
+      
+      @if (planData()) {
+        <div class="card plan-card mb-4 bg-yellow-soft">
+          <h4 class="font-bold mb-2">🍽️ Diet Plan</h4>
+          <ul class="plan-list">
+            @for (meal of planData().diet; track meal) {
+              <li><strong>{{meal}}</strong></li>
+            }
+          </ul>
+        </div>
+
+        <div class="card plan-card mb-4 bg-blue-soft">
+          <h4 class="font-bold mb-2">🏃 Workout Plan</h4>
+          <ul class="plan-list mt-2">
+            @for (workout of planData().workout; track workout) {
+              <li>{{workout}}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="plan-row">
+          <div class="card plan-card flex-1 bg-cyan-soft">
+            <h4 class="font-bold mb-2">💧 Water Goal</h4>
+            <h2 class="text-xl text-center mt-2 text-blue-700 font-bold">{{planData().water}}</h2>
+          </div>
+          <div class="card plan-card flex-1 bg-indigo-soft">
+            <h4 class="font-bold mb-2">😴 Sleep Goal</h4>
+            <h2 class="text-xl text-center mt-2 text-indigo-700 font-bold">{{planData().sleep}}</h2>
+          </div>
+        </div>
+      }
+      <button class="btn btn-secondary mt-4">🔄 Regenerate Plan</button>
+    </div>
+
+    <!-- Health Risk Section -->
+    <div class="health-risk-section">
+      <h3 class="section-title mb-4">⚠️ Health Risk Assessment</h3>
+      
+      <div class="card risk-card mb-4 risk-low">
+        <div class="risk-header">
+          <span class="risk-icon bg-green-500"></span>
+          <h4 class="font-bold">Diabetes Risk</h4>
+        </div>
+        <p class="text-sm mt-2 text-muted">Your fasting sugar history looks good. Maintain low sugar intake.</p>
+      </div>
+
+      <div class="card risk-card mb-4 risk-medium">
+        <div class="risk-header">
+          <span class="risk-icon bg-yellow-500"></span>
+          <h4 class="font-bold">Heart Risk</h4>
+        </div>
+        <p class="text-sm mt-2 text-muted">Slightly elevated cholesterol observed previously. More cardio recommended.</p>
+      </div>
+
+      <div class="card risk-card risk-high">
+        <div class="risk-header">
+          <span class="risk-icon bg-red-500"></span>
+          <h4 class="font-bold">Obesity</h4>
+        </div>
+        <p class="text-sm mt-2 text-muted">Currently overweight. The generated plan focuses on steady weight loss.</p>
+      </div>
+      
+      <div class="card mt-6 highlight-card bg-primary text-white">
+        <h4 class="font-bold mb-1">Stay Consistent!</h4>
+        <p class="text-sm opacity-90">You have completed 3 days of your goal this week. Keep it up!</p>
+      </div>
+    </div>
+
+  </div>
+</div>

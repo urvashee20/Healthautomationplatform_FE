@@ -1,0 +1,47 @@
+<div class="layout-wrapper">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="isCollapsed()">
+    <div class="sidebar-header">
+      <h2 class="text-primary font-bold" *ngIf="!isCollapsed()">HealthAssist</h2>
+      <h2 class="text-primary font-bold" *ngIf="isCollapsed()">HA</h2>
+      <button class="toggle-btn" (click)="toggleSidebar()">☰</button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="icon">📊</span>
+        <span class="label" *ngIf="!isCollapsed()">Dashboard</span>
+      </a>
+      <a routerLink="/chat" routerLinkActive="active" class="nav-item">
+        <span class="icon">🤖</span>
+        <span class="label" *ngIf="!isCollapsed()">AI Chat</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <span class="icon">👤</span>
+        <span class="label" *ngIf="!isCollapsed()">Profile</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a routerLink="/auth/login" class="nav-item text-error">
+        <span class="icon">🚪</span>
+        <span class="label" *ngIf="!isCollapsed()">Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="breadcrumbs">Home > <span class="text-primary">Dashboard</span></div>
+      <div class="user-profile">
+        <span>Hello, User</span>
+        <div class="avatar">U</div>
+      </div>
+    </div>
+    
+    <div class="content-scroll">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

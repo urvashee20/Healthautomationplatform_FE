@@ -1,0 +1,33 @@
+<div class="auth-container">
+  <div class="card auth-card animate-slide-up">
+    <div class="text-center mb-6">
+      <h1 class="text-primary font-bold" style="font-size: 1.5rem">HealthAssist</h1>
+      <p class="text-muted mt-1">Welcome back, please login</p>
+    </div>
+
+    <!-- API Error Alert -->
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4" style="color: red; font-size: 0.9rem;">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" placeholder="you@example.com">
+      </div>
+
+      <div class="mb-6">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-4" [disabled]="loginForm.invalid || isLoading">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+      
+      <div class="text-center">
+        <p class="text-muted">Don't have an account? <a routerLink="/auth/register">Register</a></p>
+      </div>
+    </form>
+  </div>
+</div>

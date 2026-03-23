@@ -1,0 +1,141 @@
+<div class="onboarding-wrapper">
+  <div class="premium-card">
+    <div class="header-wrapper">
+      <h2 class="title-glow">What's your primary goal?</h2>
+      <p class="subtitle">Select one main focus to personalize your daily AI plan.</p>
+    </div>
+
+    <!-- Goals Grid -->
+    <div class="goals-grid">
+      @for (goal of primaryGoals; track goal.id) {
+        <button class="goal-card" 
+                [class.active]="selectedPrimaryGoal() === goal.id"
+                (click)="selectPrimaryGoal(goal.id)">
+          <span class="goal-icon" aria-hidden="true">{{goal.icon}}</span>
+          <span class="goal-title">{{goal.label}}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Conditional: Manage Condition -->
+    @if (selectedPrimaryGoal() === 'condition') {
+      <div class="dynamic-panel animate-slide-fade">
+        <label class="panel-title">
+          <span aria-hidden="true">⚕️</span> Select Conditions
+        </label>
+        <div class="pill-grid">
+          @for (cond of conditionsList; track cond) {
+            <label class="pill-checkbox">
+              <input type="checkbox" [value]="cond" [checked]="selectedConditions().has(cond)" (change)="toggleCondition(cond)">
+              <span class="checkmark"></span>
+              <span class="pill-text">{{cond}}</span>
+            </label>
+          }
+        </div>
+        @if (hasOtherCondition()) {
+          <div class="input-group mt-4">
+            <label class="input-label">Specify Condition</label>
+            <input type="text" class="premium-input" placeholder="e.g. Acid Reflux, Back Pain">
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Conditional: Custom Goal -->
+    @if (selectedPrimaryGoal() === 'custom') {
+      <div class="dynamic-panel animate-slide-fade">
+        <label class="panel-title">
+          <span aria-hidden="true">🎯</span> Define Custom Goal
+        </label>
+        <div class="input-group">
+          <input type="text" class="premium-input" placeholder="e.g., reduce stress, improve stamina">
+        </div>
+      </div>
+    }
+
+    <!-- Weight Loss / Belly Fat Inputs -->
+    @if (selectedPrimaryGoal() === 'weight_loss' || selectedPrimaryGoal() === 'belly_fat') {
+      <div class="dynamic-panel animate-slide-fade">
+        <label class="panel-title">
+          <span aria-hidden="true">📈</span> Target Details
+        </label>
+        <div class="input-row">
+          <div class="input-col input-group">
+            <label class="input-label">Target Weight (kg)</label>
+            <input type="number" class="premium-input" placeholder="e.g. 65">
+          </div>
+          <div class="input-col input-group">
+            <label class="input-label">Timeline</label>
+            <div style="position: relative;">
+              <select class="premium-select">
+                <option value="1">1 month (Aggressive)</option>
+                <option value="3">3 months (Steady)</option>
+                <option value="6">6 months (Sustainable)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Muscle Gain -->
+    @if (selectedPrimaryGoal() === 'muscle') {
+      <div class="dynamic-panel animate-slide-fade">
+        <label class="panel-title">
+          <span aria-hidden="true">🏋️</span> Facilities
+        </label>
+        <div class="flex-between">
+          <div>
+            <span class="input-label mb-0" style="margin-bottom: 0;">Gym Access</span>
+            <span class="subtitle" style="font-size: 0.85rem;">Do you have access to gym equipment?</span>
+          </div>
+          <label class="ios-toggle">
+            <input type="checkbox" id="gymToggle">
+            <span class="ios-slider"></span>
+          </label>
+        </div>
+      </div>
+    }
+
+    <!-- Better Sleep -->
+    @if (selectedPrimaryGoal() === 'sleep') {
+      <div class="dynamic-panel animate-slide-fade">
+        <label class="panel-title flex-between">
+          <span><span aria-hidden="true">🌙</span> Current Sleep</span>
+          <span class="text-primary">{{sleepValue()}} Hours</span>
+        </label>
+        <input type="range" class="premium-range" min="3" max="10" step="1" [value]="sleepValue()" (input)="updateSleep($event)">
+        <div class="flex-between mt-2 subtitle" style="font-size: 0.8rem; margin-top: 0.5rem;">
+          <span>3h</span>
+          <span>10h</span>
+        </div>
+      </div>
+    }
+
+    <!-- Secondary Goals -->
+    <div class="dynamic-panel" style="background: transparent; border: none; padding: 0;">
+      <label class="panel-title mt-2">
+        Optional Improvements
+      </label>
+      <div class="pill-grid">
+        @for (goal of secondaryGoals; track goal) {
+          <label class="pill-checkbox">
+            <input type="checkbox">
+            <span class="checkmark"></span>
+            <span class="pill-text">{{goal}}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-wrapper">
+      <button class="btn-primary" (click)="generatePlan()">
+        <span>Generate My Plan</span>
+        <span aria-hidden="true">→</span>
+      </button>
+      <button class="btn-secondary" (click)="skipPlan()">Skip & Generate General Plan</button>
+    </div>
+
+  </div>
+</div>

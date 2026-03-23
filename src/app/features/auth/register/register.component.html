@@ -1,0 +1,41 @@
+<div class="auth-container">
+  <div class="card auth-card animate-slide-up">
+    <div class="text-center mb-6">
+      <h1 class="text-primary font-bold" style="font-size: 1.5rem">HealthAssist</h1>
+      <p class="text-muted mt-1">Create your account</p>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4" style="color: red; font-size: 0.9rem;">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success mb-4" style="color: green; font-size: 0.9rem;">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" placeholder="you@example.com">
+      </div>
+
+      <div class="mb-4">
+        <label for="password">Password</label>
+        <input type="password" id="password" formControlName="password" placeholder="••••••••">
+      </div>
+
+      <div class="mb-6">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" formControlName="confirmPassword" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block mb-4" [disabled]="registerForm.invalid || isLoading">
+        {{ isLoading ? 'Registering...' : 'Register' }}
+      </button>
+      
+      <div class="text-center">
+        <p class="text-muted">Already have an account? <a routerLink="/auth/login">Login</a></p>
+      </div>
+    </form>
+  </div>
+</div>
