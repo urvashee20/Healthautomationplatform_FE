@@ -19,4 +19,8 @@ export class ProfileService {
   updateProfile(profile: UserProfileDto): Observable<any> {
     return this.http.put(this.apiUrl, profile, { responseType: 'text' });
   }
+
+  getProfileById(id: string | number): Observable<UserProfileDto> {
+    return this.http.get<UserProfileDto>(`${this.apiUrl}/${id}`);
+  }
 }

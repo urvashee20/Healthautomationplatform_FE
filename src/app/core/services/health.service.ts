@@ -40,8 +40,8 @@ export class HealthService {
     const plan = {
       diet: ['Breakfast: Poha', 'Lunch: Dal & Rice', 'Dinner: Salad'],
       workout: ['15-min HIIT', 'Stretching'],
-      water: '2.5L',
-      sleep: '8 Hours'
+      water: ['Aim for 2.5L daily', 'Keep a bottle nearby'],
+      sleep: ['Aim for 8 Hours', 'Avoid screens before bed']
     };
     this.healthPlan.set(plan);
     return Promise.resolve(plan);

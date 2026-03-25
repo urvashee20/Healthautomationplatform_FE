@@ -1,35 +1,56 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HealthService } from '../../../core/services/health.service';
+import { UserProfileDto } from '../../../core/models/profile.model';
+import { ProfileService } from '../../../core/services/profile.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile-setup',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule,CommonModule],
   templateUrl: './profile-setup.component.html',
   styleUrl: './profile-setup.component.css'
 })
 export class ProfileSetupComponent {
   private router = inject(Router);
-  private healthService = inject(HealthService);
 
-  profile: any = {
-    firstName: '',
-    lastName: '',
-    dob: '',
-    height: null,
-    weight: null,
-    jobType: '',
-    foodPref: '',
-    conditions: '',
-    sleep: null,
-    routine: ''
-  };
+  profile: UserProfileDto = {
+      firstName: '',
+      lastName: '',
+      dob: '',
+      height: null,
+      weight: 0,
+      jobType: null,
+      jobName: null,
+      jobStartTime: null,
+      jobEndTime: null,
+      dailyRoutine: '',
+      foodPreference: '',
+      healthConditions: null,
+      sleepHours: null,
+    };
 
-  async onSubmit(event: Event) {
-    event.preventDefault();
-    await this.healthService.saveProfile(this.profile);
-    this.router.navigate(['/goals']);
+    private profileService = inject(ProfileService);
+
+  // async onSubmit(event: Event) {
+  //   event.preventDefault();
+  //   await this.healthService.saveProfile(this.profile);
+  //   this.router.navigate(['/goals']);
+  // }
+
+  onSubmit(){
+    this.profileService.createProfile(this.profile).subscribe({
+      next:(res) => {
+        console.log('Create profile:',res);
+        alert('Profile Created Successfully');
+
+        this.router.navigate(['/goals']);
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        alert('Error while creating profile');
+      }
+    })
   }
 }

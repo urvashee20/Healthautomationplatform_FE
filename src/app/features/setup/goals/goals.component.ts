@@ -2,7 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HealthService } from '../../../core/services/health.service';
+import { GoalService } from '../../../core/services/goal.service';
+import { AIPlanService } from '../../../core/services/ai-plan.service';
+import { CreateGoalDto } from '../../../core/models/goal.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-goals',
@@ -13,11 +16,13 @@ import { HealthService } from '../../../core/services/health.service';
 })
 export class GoalsComponent {
   private router = inject(Router);
-  private healthService = inject(HealthService);
+  private goalService = inject(GoalService);
+  private aiPlanService = inject(AIPlanService);
   
   selectedPrimaryGoal = signal<string>('');
   sleepValue = signal<number>(7);
   selectedConditions = signal<Set<string>>(new Set());
+  isLoading = signal<boolean>(false);
   
   primaryGoals = [
     { id: 'weight_loss', label: 'Lose weight', icon: '⚖️' },
@@ -65,12 +70,30 @@ export class GoalsComponent {
   }
 
   async generatePlan() {
-    await this.healthService.saveGoals({
-      primary: this.selectedPrimaryGoal(),
-      conditions: Array.from(this.selectedConditions()),
-      sleep: this.sleepValue()
-    });
-    this.router.navigate(['/dashboard']);
+    try {
+      this.isLoading.set(true);
+      
+      const primary = this.selectedPrimaryGoal();
+      const conditions = Array.from(this.selectedConditions());
+      
+      const goalDto: CreateGoalDto = {
+        primaryGoal: primary,
+        isCustomGoal: primary === 'custom',
+        healthConditions: conditions.length > 0 ? conditions : null,
+        sleepHours: this.sleepValue()
+      };
+
+      await firstValueFrom(this.goalService.setGoal(goalDto));
+      await firstValueFrom(this.aiPlanService.generatePlan());
+      
+      this.router.navigate(['/dashboard']);
+    } catch (e) {
+      console.error('Error generating plan:', e);
+      // Fallback in case of failure so the user isn't stuck forever
+      this.router.navigate(['/dashboard']);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   skipPlan() {

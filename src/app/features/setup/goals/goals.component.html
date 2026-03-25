@@ -130,11 +130,13 @@
 
     <!-- Actions -->
     <div class="action-wrapper">
-      <button class="btn-primary" (click)="generatePlan()">
-        <span>Generate My Plan</span>
-        <span aria-hidden="true">→</span>
+      <button class="btn-primary" (click)="generatePlan()" [disabled]="isLoading()">
+        <span>{{ isLoading() ? '⏳ Generating...' : 'Generate My Plan' }}</span>
+        @if (!isLoading()) {
+          <span aria-hidden="true">→</span>
+        }
       </button>
-      <button class="btn-secondary" (click)="skipPlan()">Skip & Generate General Plan</button>
+      <button class="btn-secondary" (click)="skipPlan()" [disabled]="isLoading()">Skip & Generate General Plan</button>
     </div>
 
   </div>

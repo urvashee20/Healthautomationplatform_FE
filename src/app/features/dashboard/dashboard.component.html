@@ -1,22 +1,27 @@
 <div class="dashboard-container animate-fade-in">
-  <div class="welcome-section mb-6">
-    <h1 class="font-bold text-2xl">Dashboard</h1>
-    <p class="text-muted">Current Goal: <span class="text-primary font-bold">Health Focus</span></p>
+  <div class="welcome-section mb-6" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h1 class="font-bold text-2xl">
+        Welcome, {{ profileData()?.firstName || 'User' }}!
+      </h1>
+      <p class="text-muted">Current Goal: <span class="text-primary font-bold">Health Focus</span></p>
+    </div>
+    <button class="btn btn-secondary" routerLink="/profile">✏️ Edit Profile</button>
   </div>
 
   <!-- Quick Stats -->
   <div class="stats-grid mb-8">
     <div class="card stat-card border-left-blue">
       <p class="text-muted">Current Weight</p>
-      <h2 class="stat-value">72 kg</h2>
+      <h2 class="stat-value">{{ profileData()?.weight || '--' }} kg</h2>
     </div>
     <div class="card stat-card border-left-green">
-      <p class="text-muted">Target Weight</p>
-      <h2 class="stat-value">65 kg</h2>
+      <p class="text-muted">Food Preference</p>
+      <h2 class="stat-value" style="font-size: 1.25rem;">{{ profileData()?.foodPreference || 'N/A' }}</h2>
     </div>
     <div class="card stat-card border-left-purple">
       <p class="text-muted">BMI</p>
-      <h2 class="stat-value">24.5</h2>
+      <h2 class="stat-value">{{ getBmi() }}</h2>
     </div>
     <div class="card stat-card justify-center items-center bg-primary text-white">
       <p class="opacity-80">Health Score</p>
@@ -36,7 +41,7 @@
           <h4 class="font-bold mb-2">🍽️ Diet Plan</h4>
           <ul class="plan-list">
             @for (meal of planData().diet; track meal) {
-              <li><strong>{{meal}}</strong></li>
+              <li>{{meal}}</li>
             }
           </ul>
         </div>
@@ -45,27 +50,42 @@
           <h4 class="font-bold mb-2">🏃 Workout Plan</h4>
           <ul class="plan-list mt-2">
             @for (workout of planData().workout; track workout) {
-              <li>{{workout}}</li>
+              <li [class.sub-item]="workout.includes(':')">{{workout}}</li>
             }
-          </ul>
+          </ul> 
         </div>
 
-        <div class="plan-row">
-          <div class="card plan-card flex-1 bg-cyan-soft">
+        <div class="plan-row" style="display: flex; gap: 1rem; align-items: stretch;">
+          <div class="card plan-card flex-1 bg-cyan-soft text-left">
             <h4 class="font-bold mb-2">💧 Water Goal</h4>
-            <h2 class="text-xl text-center mt-2 text-blue-700 font-bold">{{planData().water}}</h2>
+            <ul class="plan-list mt-2 text-sm text-blue-900">
+              @for (w of planData().water; track w) {
+                <li class="mb-1">{{w}}</li>
+              }
+            </ul>
           </div>
-          <div class="card plan-card flex-1 bg-indigo-soft">
+          <div class="card plan-card flex-1 bg-indigo-soft text-left">
             <h4 class="font-bold mb-2">😴 Sleep Goal</h4>
-            <h2 class="text-xl text-center mt-2 text-indigo-700 font-bold">{{planData().sleep}}</h2>
+            <ul class="plan-list mt-2 text-sm text-indigo-900">
+              @for (s of planData().sleep; track s) {
+                <li class="mb-1">{{s}}</li>
+              }
+            </ul>
           </div>
         </div>
       }
-      <button class="btn btn-secondary mt-4">🔄 Regenerate Plan</button>
+      <button class="btn btn-secondary mt-4" (click)="regeneratePlan()" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>⏳ Generating...</span>
+        }
+        @if (!isLoading()) {
+          <span>🔄 Regenerate Plan</span>
+        }
+      </button>
     </div>
 
     <!-- Health Risk Section -->
-    <div class="health-risk-section">
+    <!-- <div class="health-risk-section">
       <h3 class="section-title mb-4">⚠️ Health Risk Assessment</h3>
       
       <div class="card risk-card mb-4 risk-low">
@@ -96,7 +116,7 @@
         <h4 class="font-bold mb-1">Stay Consistent!</h4>
         <p class="text-sm opacity-90">You have completed 3 days of your goal this week. Keep it up!</p>
       </div>
-    </div>
+    </div> -->
 
   </div>
 </div>
