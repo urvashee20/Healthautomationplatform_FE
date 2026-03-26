@@ -11,7 +11,6 @@ import { ProfileService } from '../../core/services/profile.service';
 export class ProfileComponent {
   profile: UserProfileDto = {
     firstName: '',
-    middleName: null,
     lastName: '',
     dob: '',
     height: null,

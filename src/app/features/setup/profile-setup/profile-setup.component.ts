@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-profile-setup',
   standalone: true,
-  imports: [FormsModule,CommonModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './profile-setup.component.html',
   styleUrl: './profile-setup.component.css'
 })
@@ -16,33 +16,31 @@ export class ProfileSetupComponent {
   private router = inject(Router);
 
   profile: UserProfileDto = {
-      firstName: '',
-      lastName: '',
-      dob: '',
-      height: null,
-      weight: 0,
-      jobType: null,
-      jobName: null,
-      jobStartTime: null,
-      jobEndTime: null,
-      dailyRoutine: '',
-      foodPreference: '',
-      healthConditions: null,
-      sleepHours: null,
-    };
+    firstName: '',
+    lastName: '',
+    dob: '',
+    height: null,
+    weight: 0,
+    jobType: null,
+    jobName: null,
+    jobStartTime: null,
+    jobEndTime: null,
+    dailyRoutine: '',
+    foodPreference: '',
+    healthConditions: null,
+    sleepHours: null,
+  };
 
-    private profileService = inject(ProfileService);
+  private profileService = inject(ProfileService);
 
-  // async onSubmit(event: Event) {
-  //   event.preventDefault();
-  //   await this.healthService.saveProfile(this.profile);
-  //   this.router.navigate(['/goals']);
-  // }
+  ngOnInit() {
+    this.IfProfileExists();
+  }
 
-  onSubmit(){
+  onSubmit() {
     this.profileService.createProfile(this.profile).subscribe({
-      next:(res) => {
-        console.log('Create profile:',res);
+      next: (res) => {
+        console.log('Create profile:', res);
         alert('Profile Created Successfully');
 
         this.router.navigate(['/goals']);
@@ -53,4 +51,20 @@ export class ProfileSetupComponent {
       }
     })
   }
+
+  IfProfileExists() {
+    this.profileService.getProfileById().subscribe({
+      next: (res) => {
+        console.log('Profile exists:', res);
+        if (res.exists && res.profile) {
+          this.profile = res.profile;
+          //this.router.navigate(['/goals']);
+        }
+      },
+      error: (err) => {
+        console.error('Error checking profile:', err);
+      }
+    });
+  }
+
 }

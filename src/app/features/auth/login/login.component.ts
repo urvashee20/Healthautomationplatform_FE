@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,8 @@ export class LoginComponent {
     password: ['', Validators.required]
   });
 
+  constructor(private readonly profileService: ProfileService) {}
+
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -33,7 +36,16 @@ export class LoginComponent {
     this.authService.login(this.loginForm.getRawValue()).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigate(['/setup']);
+
+        this.profileService.getProfileById().subscribe(profileRes => {
+
+        if (profileRes.exists) {
+          this.router.navigate(['/goals']);
+        } else {
+           this.router.navigate(['/setup']);
+        }
+
+      });
       },
       error: (err) => {
         this.isLoading = false;
@@ -41,4 +53,8 @@ export class LoginComponent {
       }
     });
   }
+
+  
 }
+
+ 

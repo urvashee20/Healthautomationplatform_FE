@@ -1,6 +1,5 @@
 export interface UserProfileDto {
   firstName: string;
-  middleName?: string | null;
   lastName: string;
   dob: Date | string;
   height?: number | null;
@@ -13,4 +12,9 @@ export interface UserProfileDto {
   foodPreference: string;
   healthConditions?: string | null;
   sleepHours?: number | null;
+}
+
+export interface ProfileResponse {
+  exists: boolean;
+  profile: UserProfileDto | null;
 }

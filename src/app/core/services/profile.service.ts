@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserProfileDto } from '../models/profile.model';
+import { ProfileResponse, UserProfileDto } from '../models/profile.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class ProfileService {
     return this.http.put(this.apiUrl, profile, { responseType: 'text' });
   }
 
-  getProfileById(id: string | number): Observable<UserProfileDto> {
-    return this.http.get<UserProfileDto>(`${this.apiUrl}/${id}`);
+  getProfileById(): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(`${this.apiUrl}`);
   }
 }

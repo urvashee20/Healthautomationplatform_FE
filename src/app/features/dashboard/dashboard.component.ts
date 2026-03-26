@@ -1,6 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { GoalService } from '../../core/services/goal.service';
+import { GoalResponseDto } from '../../core/models/goal.model';
 import { AIPlanService } from '../../core/services/ai-plan.service';
 import { ProfileService } from '../../core/services/profile.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -20,13 +22,17 @@ export class DashboardComponent implements OnInit {
   private aiPlanService = inject(AIPlanService);
   private profileService = inject(ProfileService);
   private authService = inject(AuthService);
+  private goalService = inject(GoalService);
   
   planData = signal<any>(null);
   profileData = signal<UserProfileDto | null>(null);
+  goalData = signal<GoalResponseDto | null>(null);
   isLoading = signal<boolean>(false);
 
   async ngOnInit() {
     this.loadProfile();
+    this.loadGoal();
+    
     try {
       this.isLoading.set(true);
       let targetPlan = this.aiPlanService.currentPlan();
@@ -90,14 +96,25 @@ export class DashboardComponent implements OnInit {
   }
 
   private async loadProfile() {
-    const userId = this.authService.getUserIdFromToken();
-    if (userId) {
-      try {
-        const profile = await firstValueFrom(this.profileService.getProfileById(userId));
-        this.profileData.set(profile);
-      } catch (e) {
-        console.error('Error fetching profile data:', e);
+    try {
+      const response = await firstValueFrom(this.profileService.getProfileById());
+      if (response && response.profile) {
+        this.profileData.set(response.profile);
       }
+    } catch (e) {
+      console.error('Error fetching profile data:', e);
+    }
+  }
+
+  private async loadGoal() {
+    try {
+      const response = await firstValueFrom(this.goalService.getGoal());
+      // The backend returns a GoalResponseDto or string if "Goal not found for this user."
+      if (response && typeof response !== 'string') {
+        this.goalData.set(response as GoalResponseDto);
+      }
+    } catch (e) {
+      console.error('Error fetching goal data:', e);
     }
   }
 
@@ -109,6 +126,26 @@ export class DashboardComponent implements OnInit {
       return bmi.toFixed(1);
     }
     return 'N/A';
+  }
+
+  getPrimaryGoalLabel(): string {
+    const goalId = this.goalData()?.primaryGoal;
+    if (!goalId) return 'Health Focus';
+    const goalMap: Record<string, string> = {
+      'weight_loss': 'Lose weight ⚖️',
+      'muscle': 'Gain muscle 💪',
+      'health': 'Stay healthy 🍏',
+      'energy': 'Improve energy ⚡',
+      'sleep': 'Better sleep 😴',
+      'belly_fat': 'Reduce belly fat 🏃',
+      'condition': 'Manage condition ⚕️',
+      'custom': 'Custom goal 🎯'
+    };
+    return goalMap[goalId] || goalId;
+  }
+
+  getSecondaryGoals(): string[] {
+    return this.goalData()?.secondaryGoals || [];
   }
 }
 
