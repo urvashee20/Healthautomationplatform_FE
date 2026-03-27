@@ -18,12 +18,17 @@ export class GoalsComponent {
   private router = inject(Router);
   private goalService = inject(GoalService);
   private aiPlanService = inject(AIPlanService);
-  
+
   selectedPrimaryGoal = signal<string>('');
-  sleepValue = signal<number>(7);
+  sleepValue = signal<number>(0);
   selectedConditions = signal<Set<string>>(new Set());
   isLoading = signal<boolean>(false);
-  
+  selectedSecondaryGoal: string[] = [];
+  customGoalText = signal<string>('');
+  targetWeight = signal<number | null>(null);
+  duration = signal<number | null>(null);
+  hasGymAccess = signal<boolean>(false);
+
   primaryGoals = [
     { id: 'weight_loss', label: 'Lose weight', icon: '⚖️' },
     { id: 'muscle', label: 'Gain muscle', icon: '💪' },
@@ -34,9 +39,9 @@ export class GoalsComponent {
     { id: 'condition', label: 'Manage condition', icon: '⚕️' },
     { id: 'custom', label: 'Custom goal', icon: '🎯' }
   ];
-  
+
   conditionsList = ['Diabetes', 'Blood Pressure (BP)', 'Thyroid', 'Cholesterol', 'PCOS', 'Other'];
-  
+
   secondaryGoals = [
     'Better sleep',
     'Improve stamina',
@@ -49,7 +54,19 @@ export class GoalsComponent {
   selectPrimaryGoal(id: string) {
     this.selectedPrimaryGoal.set(id);
   }
-  
+
+  selectSecondaryGoal(goal: string) {
+    const index = this.selectedSecondaryGoal.indexOf(goal);
+
+    if (index > -1) {
+      // remove if already selected
+      this.selectedSecondaryGoal.splice(index, 1);
+    } else {
+      // add if not selected
+      this.selectedSecondaryGoal.push(goal);
+    }
+  }
+
   toggleCondition(cond: string) {
     const set = new Set(this.selectedConditions());
     if (set.has(cond)) {
@@ -59,7 +76,7 @@ export class GoalsComponent {
     }
     this.selectedConditions.set(set);
   }
-  
+
   hasOtherCondition(): boolean {
     return this.selectedConditions().has('Other');
   }
@@ -72,24 +89,45 @@ export class GoalsComponent {
   async generatePlan() {
     try {
       this.isLoading.set(true);
-      
+
       const primary = this.selectedPrimaryGoal();
       const conditions = Array.from(this.selectedConditions());
-      
+
       const goalDto: CreateGoalDto = {
         primaryGoal: primary,
         isCustomGoal: primary === 'custom',
         healthConditions: conditions.length > 0 ? conditions : null,
-        sleepHours: this.sleepValue()
+        // sleepHours: primary === 'sleep' ? this.sleepValue() : null,
+        // secondaryGoals: secondary ? [secondary] : null
       };
+
+      if (this.selectedSecondaryGoal.length > 0) {
+        goalDto.secondaryGoals = this.selectedSecondaryGoal;
+      }
+
+      if (primary === 'sleep') {
+        goalDto.sleepHours = this.sleepValue();
+      }
+
+      if (primary === 'custom' && this.customGoalText()) {
+        goalDto.customGoalText = this.customGoalText();
+      }
+
+      if (primary === 'weight_loss' || primary === 'belly_fat') {
+        goalDto.targetWeight = this.targetWeight();
+        goalDto.durationInDays = this.duration();
+      }
+
+      if (primary === 'muscle') {
+        goalDto.hasGymAccess = this.hasGymAccess();
+      }
 
       await firstValueFrom(this.goalService.setGoal(goalDto));
       await firstValueFrom(this.aiPlanService.generatePlan());
-      
+
       this.router.navigate(['/dashboard']);
     } catch (e) {
       console.error('Error generating plan:', e);
-      // Fallback in case of failure so the user isn't stuck forever
       this.router.navigate(['/dashboard']);
     } finally {
       this.isLoading.set(false);

@@ -1,6 +1,6 @@
 export interface CreateGoalDto {
   primaryGoal?: string | null;
-  secondaryGoals?: string[] | null;
+  secondaryGoals?: any;
   healthConditions?: string[] | null;
   isCustomGoal: boolean;
   customGoalText?: string | null;
