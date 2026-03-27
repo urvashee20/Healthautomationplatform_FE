@@ -34,7 +34,8 @@
       @if (hasOtherCondition()) {
       <div class="input-group mt-4">
         <label class="input-label">Specify Condition</label>
-        <input type="text" class="premium-input" placeholder="e.g. Acid Reflux, Back Pain">
+        <input type="text" class="premium-input" placeholder="e.g. Acid Reflux, Back Pain"
+          (input)="otherConditionText.set($any($event.target).value)">
       </div>
       }
     </div>

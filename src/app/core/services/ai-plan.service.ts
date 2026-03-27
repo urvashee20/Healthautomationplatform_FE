@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { AIPlanResponseDto } from '../models/ai-plan.model';
+import { AIPlanResponseDto, UserDashboardData } from '../models/ai-plan.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -46,5 +46,9 @@ export class AIPlanService {
     } catch {
       return null;
     }
+  }
+
+  getUserData(): Observable<UserDashboardData> {
+    return this.http.get<UserDashboardData>(this.apiUrl);
   }
 }

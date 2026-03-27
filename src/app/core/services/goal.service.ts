@@ -19,4 +19,8 @@ export class GoalService {
   getGoal(): Observable<GoalResponseDto | string> {
     return this.http.get<GoalResponseDto | string>(this.apiUrl);
   }
+
+  getLatestGoal(): Observable<GoalResponseDto> {
+    return this.http.get<GoalResponseDto>(this.apiUrl);
+  }
 }

@@ -1,0 +1,160 @@
+<div class="overview-container animate-fade-in">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">My Info</h1>
+    <p class="page-subtitle">Your profile details and health goals at a glance.</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your information...</p>
+    </div>
+  } @else {
+
+  <!-- Profile Card -->
+  <div class="info-card profile-hero-card">
+    <div class="hero-left">
+      <div class="avatar-circle">{{ getInitials() }}</div>
+      <div class="hero-text">
+        <h2 class="hero-name">{{ getFullName() }}</h2>
+        <p class="hero-sub">
+          @if (profile()?.jobName) {
+            <span>{{ profile()?.jobName }}</span>
+          }
+          @if (profile()?.jobType) {
+            <span class="badge badge-muted">{{ profile()?.jobType }}</span>
+          }
+        </p>
+      </div>
+    </div>
+    <button class="btn-action" routerLink="/setup">✏️ Edit Profile</button>
+  </div>
+
+  <!-- Profile Details Grid -->
+  <div class="info-card">
+    <h3 class="card-title">📋 Personal Details</h3>
+    <div class="details-grid">
+      <div class="detail-item">
+        <span class="detail-label">Age</span>
+        <span class="detail-value">{{ getAge() }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Height</span>
+        <span class="detail-value">{{ profile()?.height || '--' }} cm</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Weight</span>
+        <span class="detail-value">{{ profile()?.weight || '--' }} kg</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">BMI</span>
+        <span class="detail-value">{{ getBmi() }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Food Preference</span>
+        <span class="detail-value">{{ profile()?.foodPreference || 'N/A' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Sleep Hours</span>
+        <span class="detail-value">{{ profile()?.sleepHours || 'N/A' }} hrs</span>
+      </div>
+      <div class="detail-item span-2">
+        <span class="detail-label">Daily Routine</span>
+        <span class="detail-value">{{ profile()?.dailyRoutine || 'N/A' }}</span>
+      </div>
+      <div class="detail-item span-2">
+        <span class="detail-label">Health Conditions</span>
+        <span class="detail-value">{{ profile()?.healthConditions || 'None' }}</span>
+      </div>
+      @if (profile()?.jobStartTime || profile()?.jobEndTime) {
+        <div class="detail-item">
+          <span class="detail-label">Work Start</span>
+          <span class="detail-value">{{ formatTime(profile()?.jobStartTime) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Work End</span>
+          <span class="detail-value">{{ formatTime(profile()?.jobEndTime) }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Goals Card -->
+  <div class="info-card">
+    <div class="card-header-row">
+      <h3 class="card-title">🎯 Health Goals</h3>
+      <button class="btn-action" routerLink="/goals">✏️ Edit Goal</button>
+    </div>
+
+    <!-- Primary Goal -->
+    <div class="primary-goal-banner">
+      <span class="goal-icon-lg">{{ getPrimaryGoalDisplay().icon }}</span>
+      <div>
+        <span class="goal-label-sm">Primary Goal</span>
+        <span class="goal-label-lg">{{ getPrimaryGoalDisplay().label }}</span>
+      </div>
+    </div>
+
+    <!-- Secondary Goals -->
+    @if (getSecondaryGoals().length > 0) {
+      <div class="section-block">
+        <span class="section-label">Secondary Goals</span>
+        <div class="pills-row">
+          @for (sg of getSecondaryGoals(); track sg) {
+            <span class="pill">{{ sg }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Health Conditions from Goal -->
+    @if (getHealthConditions().length > 0) {
+      <div class="section-block">
+        <span class="section-label">Health Conditions (Goal)</span>
+        <div class="pills-row">
+          @for (hc of getHealthConditions(); track hc) {
+            <span class="pill pill-warn">{{ hc }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Extra Goal Details -->
+    <div class="goal-extras">
+      @if (goal()?.customGoalText) {
+        <div class="detail-item span-2">
+          <span class="detail-label">Custom Goal</span>
+          <span class="detail-value">{{ goal()?.customGoalText }}</span>
+        </div>
+      }
+      @if (goal()?.targetWeight) {
+        <div class="detail-item">
+          <span class="detail-label">Target Weight</span>
+          <span class="detail-value">{{ goal()?.targetWeight }} kg</span>
+        </div>
+      }
+      @if (goal()?.durationInDays) {
+        <div class="detail-item">
+          <span class="detail-label">Duration</span>
+          <span class="detail-value">{{ goal()?.durationInDays }} days</span>
+        </div>
+      }
+      @if (goal()?.sleepHours) {
+        <div class="detail-item">
+          <span class="detail-label">Sleep Target</span>
+          <span class="detail-value">{{ goal()?.sleepHours }} hrs</span>
+        </div>
+      }
+      @if (goal()?.hasGymAccess !== null && goal()?.hasGymAccess !== undefined) {
+        <div class="detail-item">
+          <span class="detail-label">Gym Access</span>
+          <span class="detail-value">{{ goal()?.hasGymAccess ? 'Yes ✅' : 'No ❌' }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  }
+</div>

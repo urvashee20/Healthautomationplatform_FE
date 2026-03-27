@@ -25,9 +25,79 @@ export class GoalsComponent {
   isLoading = signal<boolean>(false);
   selectedSecondaryGoal: string[] = [];
   customGoalText = signal<string>('');
+  otherConditionText = signal<string>('');
   targetWeight = signal<number | null>(null);
   duration = signal<number | null>(null);
   hasGymAccess = signal<boolean>(false);
+
+  async ngOnInit() {
+    try {
+      this.isLoading.set(true);
+      const data = await firstValueFrom(this.aiPlanService.getUserData());
+      
+      if (data.goal) {
+        const g = data.goal;
+        
+        // 1. Primary Goal
+        if (g.primaryGoal) this.selectedPrimaryGoal.set(g.primaryGoal);
+        
+        // 2. Custom Goal Text
+        if (g.customGoalText) this.customGoalText.set(g.customGoalText);
+        
+        // 3. Target Weight & Duration
+        if (g.targetWeight) this.targetWeight.set(g.targetWeight);
+        if (g.durationInDays) this.duration.set(g.durationInDays);
+        
+        // 4. Gym Access
+        if (g.hasGymAccess !== undefined && g.hasGymAccess !== null) {
+          this.hasGymAccess.set(g.hasGymAccess);
+        }
+        
+        // 5. Sleep Hours
+        if (g.sleepHours) this.sleepValue.set(g.sleepHours);
+
+        // 6. Secondary Goals (Robust parsing)
+        if (g.secondaryGoals) {
+          let secondary = g.secondaryGoals;
+          if (typeof secondary === 'string') {
+            try {
+              const parsed = JSON.parse(secondary);
+              if (Array.isArray(parsed)) secondary = parsed;
+              else secondary = [secondary];
+            } catch {
+              secondary = [secondary];
+            }
+          }
+          if (Array.isArray(secondary)) {
+            this.selectedSecondaryGoal = [...secondary];
+          }
+        }
+
+        // 7. Health Conditions (Populating Set and Other text)
+        if (g.healthConditions && Array.isArray(g.healthConditions)) {
+          const conditionSet = new Set<string>();
+          let otherFound = false;
+          
+          g.healthConditions.forEach(c => {
+            if (this.conditionsList.includes(c)) {
+              conditionSet.add(c);
+            } else {
+              // Custom condition - map to Other
+              conditionSet.add('Other');
+              this.otherConditionText.set(c);
+              otherFound = true;
+            }
+          });
+          
+          this.selectedConditions.set(conditionSet);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading existing goal:', e);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   primaryGoals = [
     { id: 'weight_loss', label: 'Lose weight', icon: '⚖️' },
@@ -91,7 +161,12 @@ export class GoalsComponent {
       this.isLoading.set(true);
 
       const primary = this.selectedPrimaryGoal();
-      const conditions = Array.from(this.selectedConditions());
+      let conditions = Array.from(this.selectedConditions());
+
+      // Replace 'Other' with the actual typed condition text
+      if (conditions.includes('Other') && this.otherConditionText().trim()) {
+        conditions = conditions.map(c => c === 'Other' ? this.otherConditionText().trim() : c);
+      }
 
       const goalDto: CreateGoalDto = {
         primaryGoal: primary,

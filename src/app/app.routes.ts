@@ -7,6 +7,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { UserOverviewComponent } from './features/user-overview/user-overview.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -19,6 +20,8 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'my-info', component: UserOverviewComponent },
+      { path: 'goals', component: GoalsComponent },
       { path: 'chat', component: ChatComponent },
       { path: 'profile', component: ProfileComponent }
     ]

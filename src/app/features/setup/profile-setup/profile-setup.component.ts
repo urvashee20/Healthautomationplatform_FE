@@ -31,6 +31,8 @@ export class ProfileSetupComponent {
     sleepHours: null,
   };
 
+  isEditMode = false;
+
   private profileService = inject(ProfileService);
 
   ngOnInit() {
@@ -38,18 +40,21 @@ export class ProfileSetupComponent {
   }
 
   onSubmit() {
-    this.profileService.createProfile(this.profile).subscribe({
-      next: (res) => {
-        console.log('Create profile:', res);
-        alert('Profile Created Successfully');
+    const action = this.isEditMode 
+      ? this.profileService.updateProfile(this.profile) 
+      : this.profileService.createProfile(this.profile);
 
+    action.subscribe({
+      next: (res) => {
+        console.log(this.isEditMode ? 'Update profile:' : 'Create profile:', res);
+        alert(this.isEditMode ? 'Profile Updated Successfully' : 'Profile Created Successfully');
         this.router.navigate(['/goals']);
       },
       error: (err) => {
         console.error('Error:', err);
-        alert('Error while creating profile');
+        alert('Error while saving profile');
       }
-    })
+    });
   }
 
   IfProfileExists() {
@@ -57,8 +62,14 @@ export class ProfileSetupComponent {
       next: (res) => {
         console.log('Profile exists:', res);
         if (res.exists && res.profile) {
-          this.profile = res.profile;
-          //this.router.navigate(['/goals']);
+          this.isEditMode = true;
+          this.profile = { ...res.profile };
+          
+          // Format date for <input type="date"> (yyyy-MM-dd)
+          if (this.profile.dob) {
+            const date = new Date(this.profile.dob);
+            this.profile.dob = date.toISOString().split('T')[0];
+          }
         }
       },
       error: (err) => {

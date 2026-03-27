@@ -13,3 +13,10 @@ export interface AIPlanDto {
   waterPlan: string;
   sleepPlan: string;
 }
+
+export interface UserDashboardData {
+  profile: import('./profile.model').UserProfileDto | null;
+  goal: import('./goal.model').CreateGoalDto | null;
+  plan: AIPlanDto | null;
+}
+
