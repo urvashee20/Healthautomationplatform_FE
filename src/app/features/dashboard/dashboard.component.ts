@@ -35,14 +35,14 @@ export class DashboardComponent implements OnInit {
     
     try {
       this.isLoading.set(true);
-      let targetPlan = this.aiPlanService.currentPlan();
+      let targetPlan : any = await firstValueFrom(this.aiPlanService.getUserData());
       
-      if (!targetPlan) {
+      if (!targetPlan.plan) {
         targetPlan = await firstValueFrom(this.aiPlanService.generatePlan());
       }
       
-      if (targetPlan) {
-        this.mapAndSetPlan(targetPlan);
+      if (targetPlan.plan) {
+        this.mapAndSetPlan(targetPlan.plan);
       } 
       // else {
       //   await this.loadMockPlan();

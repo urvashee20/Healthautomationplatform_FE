@@ -17,6 +17,6 @@ export interface AIPlanDto {
 export interface UserDashboardData {
   profile: import('./profile.model').UserProfileDto | null;
   goal: import('./goal.model').CreateGoalDto | null;
-  plan: AIPlanDto | null;
+  plan: AIPlanResponseDto | null;
 }
 
